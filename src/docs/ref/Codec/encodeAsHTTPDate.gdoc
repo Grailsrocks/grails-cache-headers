@@ -1,0 +1,20 @@
+
+h1. encodeAsHTTPDate
+
+h2. Purpose
+
+
+
+h2. Examples
+
+{code:java}
+foo.encodeAsHTTPDate()
+{code}
+
+h2. Description
+
+
+
+Arguments:
+
+[]
