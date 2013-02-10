@@ -170,7 +170,7 @@ class CacheHeadersService {
                 def compareDate = new Date(modifiedDate)
                 lastMod = callClosure(lastModDSL, context)
 
-                if (compareDate != lastMod) {
+                if (lastMod.after(compareDate)) {
                     lastModChanged = true
                 }
             }
