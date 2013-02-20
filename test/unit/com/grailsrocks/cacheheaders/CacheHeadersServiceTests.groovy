@@ -1,5 +1,7 @@
 package com.grailsrocks.cacheheaders
 
+import grails.test.mixin.TestFor
+
 import java.text.SimpleDateFormat
 
 import grails.test.*
@@ -9,16 +11,8 @@ import org.springframework.mock.web.MockHttpServletRequest
 
 import com.grailsrocks.cacheheaders.*
 
-class CacheHeadersServiceTests extends GrailsUnitTestCase {
-    protected void setUp() {
-        super.setUp()
-        mockLogging(CacheHeadersService)
-    }
-
-    protected void tearDown() {
-        super.tearDown()
-    }
-
+@TestFor(CacheHeadersService)
+class CacheHeadersServiceTests {
     static RFC1123_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz" // Always GMT
 
     String dateToHTTPDate(date) {
@@ -29,8 +23,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
     }
     
     void testWithCacheHeadersCachingDisabled() {
-        def svc = new CacheHeadersService()
-        svc.enabled = false
+        service.enabled = false
         
         def req = new MockHttpServletRequest()
         req.addHeader('If-None-Match', "1234567Z")
@@ -43,7 +36,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         )
         context.render = { String s -> resp.outputStream << s.bytes }
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "1234567Z"
             }
@@ -59,8 +52,6 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
     }
 
     void testWithCacheHeadersETagMatch() {
-        def svc = new CacheHeadersService()
-
         def req = new MockHttpServletRequest()
         req.addHeader('If-None-Match', "1234567Z")
         
@@ -72,7 +63,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         )
         context.render = { String s -> resp.outputStream << s.bytes }
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "1234567Z"
             }
@@ -84,8 +75,6 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
     }
 
     void testWithCacheHeadersETagNoMatchLastModUnchanged() {
-        def svc = new CacheHeadersService()
-        
         def lastMod = new Date()-100
         
         def req = new MockHttpServletRequest()
@@ -101,7 +90,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         )
         context.render = { String s -> resp.outputStream << s.bytes }
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "1234567Z"
             }
@@ -117,13 +106,11 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         
         assertEquals 200, resp.status
         assertEquals "Derelict Herds", resp.contentAsString
-        assertEquals lastMod.time, resp.getHeader('Last-Modified')
+        assertEquals lastMod.time, resp.getHeader('Last-Modified') as Long
         assertEquals "1234567Z", resp.getHeader('ETag')
     }
 
     void testWithCacheHeadersETagMatchLastModChanged() {
-        def svc = new CacheHeadersService()
-        
         def lastMod = new Date()-100
         
         def req = new MockHttpServletRequest()
@@ -139,7 +126,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         )
         context.render = { String s -> resp.outputStream << s.bytes }
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "bingo"
             }
@@ -155,13 +142,11 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         
         assertEquals 200, resp.status
         assertEquals "Derelict Herds", resp.contentAsString
-        assertEquals lastMod.time, resp.getHeader('Last-Modified')
+        assertEquals lastMod.time, resp.getHeader('Last-Modified') as Long
         assertEquals "bingo", resp.getHeader('ETag')
     }
 
     void testWithCacheHeadersETagMatchLastModUnchanged() {
-        def svc = new CacheHeadersService()
-        
         def lastMod = new Date()-100
         
         def req = new MockHttpServletRequest()
@@ -177,7 +162,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         )
         context.render = { String s -> resp.outputStream << s.bytes }
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "bingo"
             }
@@ -195,8 +180,6 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
     }
 
     void testWithCacheHeadersETagNoMatchLastModChanged() {
-        def svc = new CacheHeadersService()
-        
         def lastMod = new Date()-100
         
         def req = new MockHttpServletRequest()
@@ -212,7 +195,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         )
         context.render = { String s -> resp.outputStream << s.bytes }
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "1234567Z"
             }
@@ -228,13 +211,11 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         
         assertEquals 200, resp.status
         assertEquals "Derelict Herds", resp.contentAsString
-        assertEquals lastMod.time, resp.getHeader('Last-Modified')
+        assertEquals lastMod.time, resp.getHeader('Last-Modified') as Long
         assertEquals "1234567Z", resp.getHeader('ETag')
     }
 
     void testWithCacheHeadersLastModChanged() {
-        def svc = new CacheHeadersService()
-
         def req = new MockHttpServletRequest()
         // This is an AWFUL hack because spring mock http request/response does not do string <-> date coercion
         req.addHeader('If-Modified-Since', new Date()-102)
@@ -249,7 +230,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
             render: { String s -> resp.outputStream << s.bytes }
         )
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "OU812"
             }
@@ -264,13 +245,11 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
         
         assertEquals 200, resp.status
         assertEquals "Porcelain Heart", resp.contentAsString
-        assertEquals lastMod.time, resp.getHeader('Last-Modified')
+        assertEquals lastMod.time, resp.getHeader('Last-Modified') as Long
         assertEquals "OU812", resp.getHeader('ETag')
     }
 
     void testWithCacheHeadersLastModNotNewer() {
-        def svc = new CacheHeadersService()
-
         def d = new Date()-100
         def req = new MockHttpServletRequest()
         // This is an AWFUL hack because spring mock http request/response does not do string <-> date coercion
@@ -286,7 +265,7 @@ class CacheHeadersServiceTests extends GrailsUnitTestCase {
             render: { String s -> resp.outputStream << s.bytes }
         )
             
-        def res = svc.withCacheHeaders(context) {
+        def res = service.withCacheHeaders(context) {
             etag {
                 "5150"
             }
