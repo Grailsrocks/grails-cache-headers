@@ -2,7 +2,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import groovy.util.ConfigObject
 
 class CacheHeadersGrailsPlugin {
-    def version = "1.1.5"
+    def version = "1.1.6"
     def grailsVersion = "1.2.0 > *"
     def dependsOn = ['controllers':'1.1 > *']
     def pluginExcludes = [
@@ -10,12 +10,17 @@ class CacheHeadersGrailsPlugin {
             "grails-app/controllers/**"
     ]
     
-    def author = "Marc Palmer"
-    def authorEmail = "marc@grailsrocks.com"
+    def author = "Graeme Rocher"
+    def authorEmail = "grocher@gopivotal.com"
     def title = "Caching Headers Plugin"
     def description = '''\\
 Improve your application performance with browser caching, with easy ways to set caching headers in controller responses 
 '''
+
+    def developers = [ [ name: "Marc Palmer", email: "marc@grailsrocks.com" ], [ name: "Graeme Rocher", email: "grocher@gopivotal.com" ]]
+    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPCACHEHEADERS" ]
+    def scm = [ url: "http://github.com/grails-plugins/grails-cache-headers" ]
+    def license = "APACHE"
 
     def observe = ['controllers']
     
