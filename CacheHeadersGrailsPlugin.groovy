@@ -1,4 +1,3 @@
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import groovy.util.ConfigObject
 
 class CacheHeadersGrailsPlugin {
@@ -37,8 +36,8 @@ Improve your application performance with browser caching, with easy ways to set
         addCacheMethods(application, log)    
     }
 
-    void reloadConfig(svc, log) {
-        def conf = ConfigurationHolder.config.cache.headers
+    void reloadConfig(application, svc, log) {
+        def conf = application.config.cache.headers
         def cacheSetting = conf.enabled
         svc.enabled = ((cacheSetting instanceof String) || (cacheSetting instanceof Boolean)) ? Boolean.valueOf(cacheSetting.toString()) : true
         svc.presets = conf.presets
@@ -72,7 +71,7 @@ Improve your application performance with browser caching, with easy ways to set
     
     def doWithApplicationContext = { applicationContext ->
         def svc = applicationContext.cacheHeadersService
-        reloadConfig(svc, log)
+        reloadConfig(application, svc, log)
     }
 
     def onChange = { event ->
@@ -82,6 +81,6 @@ Improve your application performance with browser caching, with easy ways to set
     def onConfigChange = { event ->
         // Config change might mean that the caching has been turned on/off
         def svc = event.application.mainContext.cacheHeadersService
-        reloadConfig(svc, log)
+        reloadConfig(event.application, svc, log)
     }
 }
