@@ -1,5 +1,6 @@
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import groovy.util.ConfigObject
+import com.grailsrocks.cacheheaders.ControllerAnnotationHelper
 
 class CacheHeadersGrailsPlugin {
     def version = "1.1.5"
@@ -29,7 +30,8 @@ Improve your application performance with browser caching, with easy ways to set
     }
 
     def doWithDynamicMethods = { ctx ->
-        addCacheMethods(application, log)    
+        addCacheMethods(application, log)
+        ControllerAnnotationHelper.init()
     }
 
     void reloadConfig(svc, log) {

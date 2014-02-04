@@ -1,4 +1,4 @@
-package cacheheaders
+package com.grailsrocks.cacheheaders
 
 import java.text.SimpleDateFormat
 

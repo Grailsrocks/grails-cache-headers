@@ -1,7 +1,5 @@
 package com.grailsrocks.cacheheaders
 
-import java.text.SimpleDateFormat
-
 class CacheHeadersService {
 
     static transactional = false
