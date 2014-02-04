@@ -6,7 +6,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 import grails.test.*
 
-class CacheMethodsTests extends GrailsUnitTestCase {
+class CacheMethodsTests extends GroovyTestCase {
     protected void setUp() {
         super.setUp()
     }
@@ -42,7 +42,7 @@ class CacheMethodsTests extends GrailsUnitTestCase {
         con.validUntilTest1()
         
         def d = con.request.getAttribute('test_validUntil')
-        assertEquals d.time, con.response.getHeader('Expires')
+        assertEquals d.time, con.response.getHeader('Expires') as Long
     }
 
     void testValidFor() {
